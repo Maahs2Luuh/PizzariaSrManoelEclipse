@@ -1,5 +1,5 @@
 
-package PizzariaSrManoel.view;
+package PizzariaSrManoelEclipse.view;
 
 
 public class TelaMensagemFinal extends javax.swing.JFrame {

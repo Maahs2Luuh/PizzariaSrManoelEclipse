@@ -1,6 +1,6 @@
-package PizzariaSrManoel.view;
+package PizzariaSrManoelEclipse.view;
 
-import PizzariaSrManoel.model.ConexaoBanco;
+import PizzariaSrManoelEclipse.model.ConexaoBanco;
 import javax.swing.JOptionPane;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

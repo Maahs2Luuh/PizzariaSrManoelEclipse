@@ -1,4 +1,4 @@
-package PizzariaSrManoel.view;
+package PizzariaSrManoelEclipse.view;
 
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;

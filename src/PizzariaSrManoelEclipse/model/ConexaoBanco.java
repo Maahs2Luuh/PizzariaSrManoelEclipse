@@ -1,4 +1,4 @@
-package PizzariaSrManoel.model;
+package PizzariaSrManoelEclipse.model;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

@@ -1,15 +1,11 @@
-
-package PizzariaSrManoel.view;
-
+package PizzariaSrManoelEclipse.view;
 
 public class TelaCadastro extends javax.swing.JFrame {
 
-    
     public TelaCadastro() {
         initComponents();
     }
 
-    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -139,29 +135,39 @@ public class TelaCadastro extends javax.swing.JFrame {
 
     private void btnLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimparActionPerformed
         // Limpar todos os campos
-    txtNome.setText("");
-    txtEndereco.setText("");
-    txtReferencia.setText("");
-    txtCpf.setText("");
-    txtContato.setText("");
-    opcional.setSelected(false);
+        txtNome.setText("");
+        txtEndereco.setText("");
+        txtReferencia.setText("");
+        txtCpf.setText("");
+        txtContato.setText("");
+        opcional.setSelected(false);
     }//GEN-LAST:event_btnLimparActionPerformed
 
     private void btnEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnviarActionPerformed
-    // Validação simples (você pode adicionar validações mais robustas)
-        if (txtNome.getText().isEmpty() || txtEndereco.getText().isEmpty() || txtReferencia.getText().isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(null, "Por favor, preencha todos os campos obrigatórios!");
-        } else {
-            // Redirecionar para a TelaControleCaixa
-            TelaControleCaixa telaControleCaixa = new TelaControleCaixa();
-            telaControleCaixa.setVisible(true); // Abre a nova tela
-            dispose(); // Fecha a tela atual
+        if (!validarCamposPreenchidos()) {
+            exibirMensagemErro("Por favor, preencha todos os campos obrigatórios!");
+            return;
         }
+
+        abrirTelaControleCaixa();
     }//GEN-LAST:event_btnEnviarActionPerformed
 
-   
+    private boolean validarCamposPreenchidos() {
+        return !(txtNome.getText().isEmpty() || txtEndereco.getText().isEmpty() || txtReferencia.getText().isEmpty());
+    }
+
+    private void exibirMensagemErro(String mensagem) {
+        javax.swing.JOptionPane.showMessageDialog(null, mensagem);
+    }
+
+    private void abrirTelaControleCaixa() {
+        TelaControleCaixa telaControleCaixa = new TelaControleCaixa();
+        telaControleCaixa.setVisible(true);
+        dispose();
+    }
+
     public static void main(String args[]) {
-        
+
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new TelaCadastro().setVisible(true);

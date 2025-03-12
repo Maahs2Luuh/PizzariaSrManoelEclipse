@@ -1,4 +1,4 @@
-package PizzariaSrManoel.model;
+package PizzariaSrManoelEclipse.model;
 
 import java.time.LocalDateTime;
 

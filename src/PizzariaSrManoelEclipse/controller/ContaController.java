@@ -1,7 +1,7 @@
-package PizzariaSrManoel.controller;
+package PizzariaSrManoelEclipse.controller;
 
-import PizzariaSrManoel.model.ConexaoBanco;
-import PizzariaSrManoel.model.Usuario;
+import PizzariaSrManoelEclipse.model.ConexaoBanco;
+import PizzariaSrManoelEclipse.model.Usuario;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.logging.Logger; // Importe o Logger

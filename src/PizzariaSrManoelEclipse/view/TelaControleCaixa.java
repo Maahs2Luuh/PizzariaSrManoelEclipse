@@ -1,4 +1,4 @@
-package PizzariaSrManoel.view;
+package PizzariaSrManoelEclipse.view;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,7 +24,7 @@ public class TelaControleCaixa extends javax.swing.JFrame {
         tipoTransacao = new javax.swing.JComboBox<>();
         txtValor = new javax.swing.JTextField();
         txtData = new javax.swing.JFormattedTextField();
-        jTextField3 = new javax.swing.JTextField();
+        atualizarSaldoNaTela = new javax.swing.JTextField();
         btnSalvar = new javax.swing.JButton();
         btnLimpar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
@@ -45,8 +45,8 @@ public class TelaControleCaixa extends javax.swing.JFrame {
 
         txtData.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Data", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial Black", 0, 12))); // NOI18N
 
-        jTextField3.setBackground(new java.awt.Color(51, 255, 0));
-        jTextField3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Saldo", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial Black", 0, 12))); // NOI18N
+        atualizarSaldoNaTela.setBackground(new java.awt.Color(51, 255, 0));
+        atualizarSaldoNaTela.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Saldo", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial Black", 0, 12))); // NOI18N
 
         btnSalvar.setBackground(new java.awt.Color(51, 204, 0));
         btnSalvar.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
@@ -91,7 +91,7 @@ public class TelaControleCaixa extends javax.swing.JFrame {
         jLayeredPane1.setLayer(tipoTransacao, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane1.setLayer(txtValor, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane1.setLayer(txtData, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jLayeredPane1.setLayer(jTextField3, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jLayeredPane1.setLayer(atualizarSaldoNaTela, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane1.setLayer(btnSalvar, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane1.setLayer(btnLimpar, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane1.setLayer(btnCancelar, javax.swing.JLayeredPane.DEFAULT_LAYER);
@@ -111,7 +111,7 @@ public class TelaControleCaixa extends javax.swing.JFrame {
                         .addGap(29, 29, 29)
                         .addComponent(btnCancelar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(atualizarSaldoNaTela, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jLayeredPane1Layout.createSequentialGroup()
                         .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(txtDescricao)
@@ -141,7 +141,7 @@ public class TelaControleCaixa extends javax.swing.JFrame {
                     .addComponent(btnSalvar)
                     .addComponent(btnLimpar)
                     .addComponent(btnCancelar)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(atualizarSaldoNaTela, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(28, Short.MAX_VALUE))
         );
 
@@ -166,66 +166,82 @@ public class TelaControleCaixa extends javax.swing.JFrame {
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
         try {
-            String valorTexto = txtValor.getText().trim().replace(",", ".");
-            if (valorTexto.isEmpty()) {
-                throw new IllegalArgumentException("O campo de valor não pode estar vazio.");
-            }
+            double valor = validarValor(txtValor.getText());
+            String dataTexto = validarData(txtData.getText());
+            String descricao = validarDescricao(txtDescricao.getText());
+            String tipo = validarTipoTransacao();
 
-            double valor = Double.parseDouble(valorTexto);
-            if (valor <= 0) {
-                throw new IllegalArgumentException("O valor deve ser maior que zero.");
-            }
-
-            String dataTexto = txtData.getText().trim();
-            if (dataTexto.isEmpty()) {
-                throw new IllegalArgumentException("O campo de data não pode estar vazio.");
-            }
-
-            SimpleDateFormat formatoData = new SimpleDateFormat("dd/MM/yyyy");
-            formatoData.setLenient(false);
-            formatoData.parse(dataTexto); // Valida o formato da data
-
-            String descricao = txtDescricao.getText().trim();
-            if (descricao.isEmpty()) {
-                throw new IllegalArgumentException("A descrição não pode estar vazia.");
-            }
-
-            if (tipoTransacao.getSelectedIndex() == -1) {
-                throw new IllegalArgumentException("Selecione o tipo de transação.");
-            }
-
-            String tipo = (String) tipoTransacao.getSelectedItem();
             if ("Saída".equals(tipo) && valor > saldo) {
                 throw new IllegalArgumentException("Saldo insuficiente para realizar a saída.");
             }
 
-            if ("Entrada".equals(tipo)) {
-                saldo += valor;
-            } else if ("Saída".equals(tipo)) {
-                saldo -= valor;
-            }
-
-            // Adiciona a transação na tabela
-            javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) tabelaTransacoes.getModel();
-            model.addRow(new Object[]{descricao, tipo, String.format("R$ %.2f", valor), dataTexto});
-
-            atualizarSaldoNaTela();
-
+            atualizarSaldo(tipo, valor);
+            adicionarTransacaoNaTabela(descricao, tipo, valor, dataTexto);
             JOptionPane.showMessageDialog(this, "Dados salvos com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "O campo valor deve ser um número real válido.", "Erro", JOptionPane.ERROR_MESSAGE);
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-        } catch (ParseException ex) {
-            Logger.getLogger(TelaControleCaixa.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnSalvarActionPerformed
 
-    private void atualizarSaldoNaTela() {
-        jTextField3.setEditable(false);
-        jTextField3.setText(String.format("R$ %.2f", saldo));
+    private double validarValor(String valorTexto) throws IllegalArgumentException {
+        valorTexto = valorTexto.trim().replace(",", ".");
+        if (valorTexto.isEmpty()) {
+            throw new IllegalArgumentException("O campo de valor não pode estar vazio.");
+        }
+
+        double valor = Double.parseDouble(valorTexto);
+        if (valor <= 0) {
+            throw new IllegalArgumentException("O valor deve ser maior que zero.");
+        }
+        return valor;
     }
 
+    private String validarData(String dataTexto) throws IllegalArgumentException, ParseException {
+        dataTexto = dataTexto.trim();
+        if (dataTexto.isEmpty()) {
+            throw new IllegalArgumentException("O campo de data não pode estar vazio.");
+        }
+
+        SimpleDateFormat formatoData = new SimpleDateFormat("dd/MM/yyyy");
+        formatoData.setLenient(false);
+        formatoData.parse(dataTexto);
+        return dataTexto;
+    }
+
+    private String validarDescricao(String descricao) throws IllegalArgumentException {
+        descricao = descricao.trim();
+        if (descricao.isEmpty()) {
+            throw new IllegalArgumentException("A descrição não pode estar vazia.");
+        }
+        return descricao;
+    }
+
+    private String validarTipoTransacao() throws IllegalArgumentException {
+        if (tipoTransacao.getSelectedIndex() == -1) {
+            throw new IllegalArgumentException("Selecione o tipo de transação.");
+        }
+        return (String) tipoTransacao.getSelectedItem();
+    }
+
+    private void atualizarSaldoNaTela() {
+        atualizarSaldoNaTela.setText(String.format("R$ %.2f", saldo));
+    }
+
+    private void atualizarSaldo(String tipo, double valor) {
+        if ("Entrada".equals(tipo)) {
+            saldo += valor;
+        } else {
+            saldo -= valor;
+        }
+        atualizarSaldoNaTela();
+    }
+
+    private void adicionarTransacaoNaTabela(String descricao, String tipo, double valor, String dataTexto) {
+        javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) tabelaTransacoes.getModel();
+        model.addRow(new Object[]{descricao, tipo, String.format("R$ %.2f", valor), dataTexto});
+    }
+
+    
     private void btnLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimparActionPerformed
         txtDescricao.setText("");
         tipoTransacao.setSelectedIndex(-1);
@@ -255,13 +271,13 @@ public class TelaControleCaixa extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField atualizarSaldoNaTela;
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnLimpar;
     private javax.swing.JButton btnSalvar;
     private javax.swing.JLayeredPane jLayeredPane1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextField jTextField3;
     private javax.swing.JTable tabelaTransacoes;
     private javax.swing.JComboBox<String> tipoTransacao;
     private javax.swing.JFormattedTextField txtData;
